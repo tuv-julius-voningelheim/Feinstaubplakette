@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["esnext", "dom", "dom.iterable"],
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+
+    "outDir": "dist",
+    "rootDir": ".",
+
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": false,
+    "sourceMap": false,
+    "inlineSources": false,
+
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "verbatimModuleSyntax": true,
+
+    "allowJs": false,
+    "checkJs": false,
+    "types": ["node", "mocha", "chai"],
+
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"],
+      "@storybook/*": ["storybook/*"],
+      "@studio-export/*": ["studio-export/*"],
+      "@theme/*": ["theme/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.stories.ts",
+    "storybook",
+    "scripts"
+  ]
+}

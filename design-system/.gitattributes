@@ -1,0 +1,4 @@
+# Normalize line endings for generated token CSS files
+studio-export/styles/*.css text eol=lf
+dist/**/*.css text eol=lf
+

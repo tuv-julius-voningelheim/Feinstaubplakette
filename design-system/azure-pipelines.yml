@@ -1,0 +1,353 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  node_version: '22.x'
+  npm_cache: '$(Pipeline.Workspace)/.npm'
+
+stages:
+  - stage: Build
+    displayName: 'Build Stage'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build, test and package'
+        steps:
+          - checkout: self
+            clean: true
+
+          - bash: |
+              set -euo pipefail
+
+              echo "Disk usage before cleanup"
+              df -h /
+
+              sudo rm -rf /usr/local/lib/android || true
+              sudo rm -rf /usr/share/dotnet || true
+              sudo rm -rf /opt/ghc || true
+              sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+
+              sudo apt-get clean
+              sudo rm -rf /var/lib/apt/lists/*
+              sudo rm -rf /var/cache/apt/archives/*
+
+              echo "Disk usage after cleanup"
+              df -h /
+            displayName: 'Reclaim hosted-agent disk space'
+
+          - task: UseNode@1
+            inputs:
+              version: $(node_version)
+            displayName: 'Install Node.js'
+
+          - bash: |
+              set -euo pipefail
+
+              cat > .npmrc.install <<EOF
+              registry=https://registry.npmjs.org/
+              always-auth=true
+
+              @tuvsud:registry=https://pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/
+              //pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/:_authToken=${AZURE_NPM_TOKEN}
+              EOF
+
+              chmod 600 .npmrc.install
+            displayName: 'Create .npmrc for install'
+            env:
+              AZURE_NPM_TOKEN: $(AZURE_NPM_TOKEN)
+
+          - task: Cache@2
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(npm_cache)
+            displayName: 'Cache npm'
+
+          - bash: |
+              set -euo pipefail
+
+              npm config set cache "$(npm_cache)" --global
+              npm ci --userconfig .npmrc.install
+            displayName: 'Install dependencies (icons feed)'
+
+          - bash: |
+              set -euo pipefail
+
+              echo "Disk usage before Playwright installation"
+              df -h /
+
+              npx playwright install --with-deps
+
+              sudo apt-get clean
+              sudo rm -rf /var/lib/apt/lists/*
+              sudo rm -rf /var/cache/apt/archives/*
+
+              echo "Disk usage after Playwright installation"
+              df -h /
+
+              du -sh "$HOME/.cache/ms-playwright" 2>/dev/null || true
+              du -sh node_modules 2>/dev/null || true
+              du -sh "$(npm_cache)" 2>/dev/null || true
+            displayName: 'Install Playwright browsers'
+
+          - bash: |
+              set -euo pipefail
+              npm run lint
+            displayName: 'Run lint checks'
+
+          - bash: |
+              set -euo pipefail
+
+              echo "Disk usage before unit tests"
+              df -h /
+
+              npm run test
+            displayName: 'Run unit tests'
+
+          - bash: |
+              set -euo pipefail
+
+              echo "Disk usage before build"
+              df -h /
+
+              npm run build
+
+              echo "Disk usage after build"
+              df -h /
+            displayName: 'Build project'
+
+          - bash: |
+              set -euo pipefail
+
+              if [ ! -d "dist" ]; then
+                echo "dist directory was not created"
+                exit 1
+              fi
+
+              du -sh dist
+            displayName: 'Validate build output'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'dist'
+              ArtifactName: 'dist'
+              publishLocation: 'Container'
+            displayName: 'Publish build artifact'
+
+          - bash: |
+              set -euo pipefail
+
+              cat > .npmrc.version-check <<EOF
+              registry=https://registry.npmjs.org/
+              always-auth=true
+
+              @tuvsud:registry=https://pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/
+              //pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/:_authToken=${AZURE_NPM_TOKEN}
+              EOF
+
+              chmod 600 .npmrc.version-check
+            displayName: 'Create .npmrc for version check'
+            env:
+              AZURE_NPM_TOKEN: $(AZURE_NPM_TOKEN)
+
+          - bash: |
+              set -euo pipefail
+
+              PKG_NAME="$(node -p "require('./package.json').name")"
+              PKG_VERSION="$(node -p "require('./package.json').version")"
+
+              echo "Local package: ${PKG_NAME}@${PKG_VERSION}"
+
+              PUBLISHED_VERSION="$(
+                npm view "$PKG_NAME" version \
+                  --registry="https://pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/" \
+                  --userconfig=".npmrc.version-check" \
+                  2>/dev/null || echo "0.0.0"
+              )"
+
+              echo "Published version: ${PUBLISHED_VERSION}"
+
+              if [ "$PKG_VERSION" = "$PUBLISHED_VERSION" ]; then
+                echo "Package version already exists"
+                echo "##vso[task.setvariable variable=shouldPublish;isOutput=true]false"
+              else
+                echo "Package version is new"
+                echo "##vso[task.setvariable variable=shouldPublish;isOutput=true]true"
+              fi
+            name: setvars
+            displayName: 'Detect publish necessity'
+
+          - bash: |
+              set +e
+
+              echo "Disk usage before final cleanup"
+              df -h /
+
+              rm -f .npmrc.install
+              rm -f .npmrc.version-check
+              rm -rf "$HOME/.cache/ms-playwright"
+              rm -rf playwright-report
+              rm -rf test-results
+              rm -rf blob-report
+              rm -rf .playwright
+
+              sudo apt-get clean
+              sudo rm -rf /var/lib/apt/lists/*
+              sudo rm -rf /var/cache/apt/archives/*
+
+              echo "Disk usage after final cleanup"
+              df -h /
+            displayName: 'Clean temporary build files'
+            condition: always()
+
+  - stage: NpmPublish
+    displayName: 'Publish to npm'
+    dependsOn:
+      - Build
+    condition: and(succeeded(), eq(dependencies.Build.outputs['BuildJob.setvars.shouldPublish'], 'true'))
+    jobs:
+      - deployment: NpmPublishJob
+        displayName: 'Publish package to Azure Artifacts'
+        environment: prod
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  clean: true
+
+                - task: UseNode@1
+                  inputs:
+                    version: $(node_version)
+                  displayName: 'Install Node.js'
+
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    artifactName: 'dist'
+                    downloadPath: '$(Build.SourcesDirectory)'
+                  displayName: 'Download build artifact'
+
+                - bash: |
+                    set -euo pipefail
+
+                    cat > .npmrc.publish <<EOF
+                    registry=https://registry.npmjs.org/
+                    always-auth=true
+
+                    @tuvsud:registry=https://pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/
+                    //pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/:_authToken=${AZURE_NPM_TOKEN}
+                    EOF
+
+                    chmod 600 .npmrc.publish
+                  displayName: 'Create .npmrc for publish'
+                  env:
+                    AZURE_NPM_TOKEN: $(AZURE_NPM_TOKEN)
+
+                - task: Cache@2
+                  inputs:
+                    key: 'npm | "$(Agent.OS)" | package-lock.json'
+                    restoreKeys: |
+                      npm | "$(Agent.OS)"
+                    path: $(npm_cache)
+                  displayName: 'Cache npm'
+
+                - bash: |
+                    set -euo pipefail
+
+                    npm config set cache "$(npm_cache)" --global
+                    npm ci --userconfig .npmrc.publish
+                  displayName: 'Install dependencies (publish context)'
+
+                - bash: |
+                    set -euo pipefail
+
+                    if [ ! -d "dist" ]; then
+                      echo "Downloaded dist artifact was not found"
+                      exit 1
+                    fi
+
+                    npm publish \
+                      --access=restricted \
+                      --userconfig .npmrc.publish
+                  displayName: 'Publish package to Azure Artifacts'
+
+                - bash: |
+                    rm -f .npmrc.publish
+                  displayName: 'Remove publish npm credentials'
+                  condition: always()
+
+  - stage: FigmaPublish
+    displayName: 'Publish to Figma registry'
+    dependsOn:
+      - Build
+      - NpmPublish
+    condition: and(succeeded('NpmPublish'), eq(dependencies.Build.outputs['BuildJob.setvars.shouldPublish'], 'true'))
+    variables:
+      - group: design-system-secrets
+    jobs:
+      - job: FigmaPublishJob
+        displayName: 'Create and publish Figma mirror'
+        steps:
+          - checkout: self
+            clean: true
+
+          - task: UseNode@1
+            inputs:
+              version: $(node_version)
+            displayName: 'Install Node.js'
+
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              artifactName: 'dist'
+              downloadPath: '$(Build.SourcesDirectory)'
+            displayName: 'Download build artifact'
+
+          - task: Cache@2
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(npm_cache)
+            displayName: 'Cache npm'
+
+          - bash: |
+              set -euo pipefail
+
+              npm config set cache "$(npm_cache)" --global
+              npm ci
+            displayName: 'Install dependencies'
+            env:
+              FIGMA_NPM_TOKEN: $(FIGMA_NPM_TOKEN)
+
+          - bash: |
+              set -euo pipefail
+
+              PKG_VERSION="$(node -p "require('./package.json').version")"
+
+              echo "Package version: ${PKG_VERSION}"
+
+              if node -e "process.exit(/-(alpha|beta|rc)(\.|$)/.test(process.argv[1]) ? 0 : 1)" "$PKG_VERSION"; then
+                echo "Prerelease detected, skipping Figma publish"
+                exit 0
+              fi
+
+              npm run make:figma-mirror
+
+              if [ ! -d "dist-figma" ]; then
+                echo "dist-figma directory was not created"
+                exit 1
+              fi
+
+              du -sh dist-figma
+
+              npm publish ./dist-figma \
+                --access=restricted \
+                --registry="https://registry.figma.com/npm/47b70d29-1b38-4307-bc23-1c0fda0d77f3/registry/"
+            displayName: 'Publish mirror to Figma'
+            env:
+              FIGMA_NPM_TOKEN: $(FIGMA_NPM_TOKEN)

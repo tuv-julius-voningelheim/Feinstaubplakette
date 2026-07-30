@@ -1,0 +1,992 @@
+﻿import { Meta } from '@storybook/addon-docs/blocks';
+
+export const copyUrl = (e, url) => {
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = e.currentTarget;
+        btn.style.color = '#1a7a4a';
+        setTimeout(() => {
+            btn.style.color = '';
+        }, 1500);
+    });
+};
+
+export const FileCopyIcon = () => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="14px"
+        viewBox="0 -960 960 960"
+        width="14px"
+        fill="currentColor"
+        style={{ display: 'block' }}
+    >
+        <path d="M760-200H320q-33 0-56.5-23.5T240-280v-560q0-33 23.5-56.5T320-920h280l240 240v400q0 33-23.5 56.5T760-200ZM560-640v-200H320v560h440v-360H560ZM160-40q-33 0-56.5-23.5T80-120v-560h80v560h440v80H160Zm160-800v200-200 560-560Z" />
+    </svg>
+);
+
+<Meta title="Foundation/Typography" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+  .font-table { width: 100%; border-collapse: collapse; font-family: "TUV SUD Pro", system-ui, sans-serif; }
+  .font-table th { text-align: left; padding: 10px 14px; border-bottom: 2px solid #ddd; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #666; font-weight: 600; }
+  .font-table td { padding: 12px 14px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  .font-table tr:last-child td { border-bottom: none; }
+  .font-weight-label { font-size: 11px; color: #999; font-family: monospace; }
+  .font-preview { font-family: "TUV SUD Pro", system-ui, sans-serif; font-size: 18px; line-height: 1.4; }
+  .font-link-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .font-link-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid #ddd; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #666; font-weight: 600; background: #f8f8f8; }
+  .font-link-table td { padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  .font-link-table tr:last-child td { border-bottom: none; }
+  .font-link-table a { color: #0066cc; text-decoration: none; font-family: monospace; font-size: 11px; word-break: break-all; }
+  .font-link-table a:hover { text-decoration: underline; }
+  .font-link-cell { display: flex; align-items: center; gap: 6px; }
+  .copy-btn { background: none; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; padding: 1px 5px; color: #666; line-height: 1.4; flex-shrink: 0; }
+  .copy-btn:hover { background: #f0f0f0; border-color: #bbb; color: #333; }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 11px; font-family: monospace; background: #f0f0f0; color: #444; }
+  .badge-italic { background: #e8f0fe; color: #1a56db; }
+`}</style>
+
+<div
+    className="tuv-typo"
+    style={{ display: 'flex', gap: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+>
+    <h1>Typography</h1>
+</div>
+
+The brand font used in our design system is **TUV SUD Pro**. It is used for all text elements including headings,
+paragraphs, buttons, and labels.
+
+---
+
+### Loading the Fonts
+
+The fonts are hosted on the TÜV SÜD asset CDN and are loaded automatically when you import the fonts CSS. At the entry point of your application, include one of the following:
+
+**JavaScript / bundler (recommended):**
+
+```js
+import '@tuvsud/design-system/theme/fonts.css';
+```
+
+**HTML `<link>` tag:**
+
+```html
+<link rel="stylesheet" href="node_modules/@tuvsud/design-system/dist/theme/fonts.css" />
+```
+
+> The CSS file references fonts directly from `https://madc.tuvsud.com` — no additional font files need to be copied or hosted.
+
+### Font Family
+
+The primary font family used is:
+
+```css
+font-family: 'TUV SUD Pro', system-ui, sans-serif;
+```
+
+---
+
+### Font Weights
+
+All available weights and styles of **TUV SUD Pro**:
+
+<table className="font-table">
+    <thead>
+        <tr>
+            <th>Weight</th>
+            <th>Name</th>
+            <th>Normal</th>
+            <th>Italic</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <span className="badge">100</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Air</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 100, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 100, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">200</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Thin</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 200, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 200, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">300</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Light</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 300, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 300, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">400</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Regular</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 400, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 400, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">500</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Medium</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 500, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 500, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">700</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Bold</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 700, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 700, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span className="badge">900</span>
+            </td>
+            <td>
+                <span className="font-weight-label">Black</span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 900, fontStyle: 'normal' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+            <td>
+                <span className="font-preview" style={{ fontWeight: 900, fontStyle: 'italic' }}>
+                    The quick brown fox jumps over the lazy dog
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
+### Heading Styles
+
+<div className="tuv-typo">
+    <h1 style={{ fontWeight: 700 }}>Heading 1 — Bold 700</h1>
+    <h2 style={{ fontWeight: 700 }}>Heading 2 — Bold 700</h2>
+    <h3 style={{ fontWeight: 700 }}>Heading 3 — Bold 700</h3>
+    <h4 style={{ fontWeight: 700 }}>Heading 4 — Bold 700</h4>
+    <h5 style={{ fontWeight: 700 }}>Heading 5 — Bold 700</h5>
+    <h6 style={{ fontWeight: 700 }}>Heading 6 — Bold 700</h6>
+</div>
+
+---
+
+### Font Asset Links
+
+Direct CDN links to all individual font files. These are the same assets loaded by `fonts.css`.
+
+<table className="font-link-table">
+    <thead>
+        <tr>
+            <th>Font Name</th>
+            <th>Weight</th>
+            <th>Style</th>
+            <th>WOFF2</th>
+            <th>WOFF</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>TUVSUDPro-Air</td>
+            <td>
+                <span className="badge">100</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/a25d3ab9-fe82-41f4-bb1b-d92093874f46/TUVSUDPro-Air_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Air_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/a25d3ab9-fe82-41f4-bb1b-d92093874f46/TUVSUDPro-Air_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/a6b95034-b2a3-4456-ad0a-ed5dd06794f1/TUVSUDPro-Air_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Air_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/a6b95034-b2a3-4456-ad0a-ed5dd06794f1/TUVSUDPro-Air_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-AirItalic</td>
+            <td>
+                <span className="badge">100</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/d9663384-71f2-4180-a51f-c06f6b864286/TUVSUDPro-AirItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-AirItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/d9663384-71f2-4180-a51f-c06f6b864286/TUVSUDPro-AirItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/685a4a10-0cb9-4042-8f47-5b30be05f653/TUVSUDPro-AirItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-AirItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/685a4a10-0cb9-4042-8f47-5b30be05f653/TUVSUDPro-AirItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Thin</td>
+            <td>
+                <span className="badge">200</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/30348a6e-185c-4fd1-8ca2-bc4b2873c45b/TUVSUDPro-Thin_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Thin_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/30348a6e-185c-4fd1-8ca2-bc4b2873c45b/TUVSUDPro-Thin_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/38b962f3-4370-4860-8b2a-09dac52126e9/TUVSUDPro-Thin_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Thin_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/38b962f3-4370-4860-8b2a-09dac52126e9/TUVSUDPro-Thin_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-ThinItalic</td>
+            <td>
+                <span className="badge">200</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/0fd494b2-03d9-46a2-9d2b-7c85e9db830e/TUVSUDPro-ThinItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-ThinItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/0fd494b2-03d9-46a2-9d2b-7c85e9db830e/TUVSUDPro-ThinItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/486a8a6a-0936-4435-af1e-83a9ebcce2ae/TUVSUDPro-ThinItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-ThinItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/486a8a6a-0936-4435-af1e-83a9ebcce2ae/TUVSUDPro-ThinItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Light</td>
+            <td>
+                <span className="badge">300</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/dbe2c635-6e21-474f-b859-5c01b81ff5b4/TUVSUDPro-Light_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Light_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/dbe2c635-6e21-474f-b859-5c01b81ff5b4/TUVSUDPro-Light_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/1d111800-883f-4c2a-8b0f-7c6940926604/TUVSUDPro-Light_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Light_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/1d111800-883f-4c2a-8b0f-7c6940926604/TUVSUDPro-Light_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-LightItalic</td>
+            <td>
+                <span className="badge">300</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/33dc6588-043a-4717-abec-8582d8b14e5b/TUVSUDPro-LightItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-LightItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/33dc6588-043a-4717-abec-8582d8b14e5b/TUVSUDPro-LightItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/cb5b9146-1d2c-49eb-8ea1-056eda95fc56/TUVSUDPro-LightItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-LightItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/cb5b9146-1d2c-49eb-8ea1-056eda95fc56/TUVSUDPro-LightItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Regular</td>
+            <td>
+                <span className="badge">400</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/b0ef565b-8a7d-4920-9f51-78cda91c2121/TUVSUDPro-Regular_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Regular_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/b0ef565b-8a7d-4920-9f51-78cda91c2121/TUVSUDPro-Regular_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/fdd034f2-9839-4911-966d-1ea5ab27de31/TUVSUDPro-Regular_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Regular_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/fdd034f2-9839-4911-966d-1ea5ab27de31/TUVSUDPro-Regular_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-RegularItalic</td>
+            <td>
+                <span className="badge">400</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/eac1d93a-aaf8-40fc-8b1c-465c838a9d4a/TUVSUDPro-RegularItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-RegularItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/eac1d93a-aaf8-40fc-8b1c-465c838a9d4a/TUVSUDPro-RegularItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/cab5a3d9-32cf-4c42-a92f-d93338644619/TUVSUDPro-RegularItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-RegularItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/cab5a3d9-32cf-4c42-a92f-d93338644619/TUVSUDPro-RegularItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Medium</td>
+            <td>
+                <span className="badge">500</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/e2bd4e82-5485-45bd-95f7-f8a727dd5705/TUVSUDPro-Medium_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Medium_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/e2bd4e82-5485-45bd-95f7-f8a727dd5705/TUVSUDPro-Medium_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/4b6b04b2-0fc4-4c28-b41a-4f10e8f9b2a3/TUVSUDPro-Medium_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Medium_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/4b6b04b2-0fc4-4c28-b41a-4f10e8f9b2a3/TUVSUDPro-Medium_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-MediumItalic</td>
+            <td>
+                <span className="badge">500</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/76f2f8c1-7965-457e-ae27-689a1a41f65b/TUVSUDPro-MediumItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-MediumItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/76f2f8c1-7965-457e-ae27-689a1a41f65b/TUVSUDPro-MediumItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/a24e6270-aca5-48db-81f3-409b0a83f50d/TUVSUDPro-MediumItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-MediumItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/a24e6270-aca5-48db-81f3-409b0a83f50d/TUVSUDPro-MediumItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Bold</td>
+            <td>
+                <span className="badge">700</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/eaa912a3-3a86-4b0c-8fc7-b78042d981b7/TUVSUDPro-Bold_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Bold_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/eaa912a3-3a86-4b0c-8fc7-b78042d981b7/TUVSUDPro-Bold_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/19fd1bef-603e-4dc6-abab-afe59e4a0a54/TUVSUDPro-Bold_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Bold_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/19fd1bef-603e-4dc6-abab-afe59e4a0a54/TUVSUDPro-Bold_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-BoldItalic</td>
+            <td>
+                <span className="badge">700</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/f5e92e80-aa07-4e61-b977-4d41bd58a884/TUVSUDPro-BoldItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-BoldItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/f5e92e80-aa07-4e61-b977-4d41bd58a884/TUVSUDPro-BoldItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/01509fce-e922-4c75-a82d-92d344ffb8f3/TUVSUDPro-BoldItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-BoldItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/01509fce-e922-4c75-a82d-92d344ffb8f3/TUVSUDPro-BoldItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-Black</td>
+            <td>
+                <span className="badge">900</span>
+            </td>
+            <td>Normal</td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/de354031-fb9a-4ef8-af26-a2b03444a238/TUVSUDPro-Black_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Black_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/de354031-fb9a-4ef8-af26-a2b03444a238/TUVSUDPro-Black_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/23274af9-cd1a-48ee-bc2c-3ef8d5bbd905/TUVSUDPro-Black_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-Black_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/23274af9-cd1a-48ee-bc2c-3ef8d5bbd905/TUVSUDPro-Black_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>TUVSUDPro-BlackItalic</td>
+            <td>
+                <span className="badge">900</span>
+            </td>
+            <td>
+                <span className="badge badge-italic">Italic</span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/cfd917e4-587e-40b3-bc63-33452d90358b/TUVSUDPro-BlackItalic_WOFF2.woff2"
+                        target="_blank"
+                    >
+                        TUVSUDPro-BlackItalic_WOFF2.woff2
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/cfd917e4-587e-40b3-bc63-33452d90358b/TUVSUDPro-BlackItalic_WOFF2.woff2',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+            <td>
+                <span className="font-link-cell">
+                    <a
+                        href="https://madc.tuvsud.com/asset/0d6b43f6-3205-4de2-8c7f-5b16e571d8a1/TUVSUDPro-BlackItalic_WOFF.woff"
+                        target="_blank"
+                    >
+                        TUVSUDPro-BlackItalic_WOFF.woff
+                    </a>
+                    <button
+                        className="copy-btn"
+                        title="Copy URL"
+                        onClick={e =>
+                            copyUrl(
+                                e,
+                                'https://madc.tuvsud.com/asset/0d6b43f6-3205-4de2-8c7f-5b16e571d8a1/TUVSUDPro-BlackItalic_WOFF.woff',
+                            )
+                        }
+                    >
+                        <FileCopyIcon />
+                    </button>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>

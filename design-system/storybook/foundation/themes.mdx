@@ -1,0 +1,68 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Themes" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+`}</style>
+
+<div
+    className="tuv-typo"
+    style={{ display: 'flex', gap: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+>
+    <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+        <img src="/assets/themes.jpeg" alt="Themes preview" width="120" />
+    </div>
+    <h1>Themes</h1>
+</div>
+
+<div className="tuv-typo">
+    <p>
+        The Design System supports light and dark themes to ensure optimal readability and accessibility in all environments and according to user preferences.
+    </p>
+
+    <h2>Theme Switching</h2>
+    <p>
+        Theme selection is controlled through a CSS class on the root element of the application. Components automatically adapt to the active theme without any logic changes.
+    </p>
+
+    <h3>Light Theme</h3>
+    <p>
+        The light theme is the default appearance and requires no additional class. If explicit declaration is preferred, the class <code>ts-theme-light</code> can be applied to the root element:
+    </p>
+
+    ``` jsx
+    <html class="ts-theme-light">
+    <head>
+        ...
+    </head>
+
+    <body>
+    ...
+    </body>
+    </html>
+    ```
+
+    <h3>Dark Theme</h3>
+    <p>
+        To enable dark mode, apply the class <code>ts-theme-dark</code> to the root element of the application:
+    </p>
+
+    ``` jsx
+        <html class="ts-theme-dark">
+            <head>
+             ...
+            </head>
+
+            <body>
+            ...
+            </body>
+        </html>
+    ```
+
+    <h2>React</h2>
+    For React applications we recommended to use Context API to manage theme state globally.
+    You can find an example implementation <a target="_blank" href="https://dev.azure.com/tuvsud01/ALGORITHM%20Design%20System/_git/design-system-react?path=/src/theme/ThemeContext.tsx">React Theme Context</a>
+
+</div>

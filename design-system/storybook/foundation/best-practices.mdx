@@ -1,0 +1,272 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Best Practices" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+  .tuv-wrap{max-width:980px;width:100%;padding:0 16px}
+  .bp-grid{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:12px}
+  @media(max-width:700px){.bp-grid{grid-template-columns:1fr}}
+  .bp-card{border-radius:10px;padding:16px 18px;line-height:1.55;font-size:14px}
+  .bp-do{border:1.5px solid #1a7f37;background:rgba(26,127,55,.06)}
+  .bp-dont{border:1.5px solid #cf222e;background:rgba(207,34,46,.06)}
+  .bp-label{font-weight:700;font-size:12px;letter-spacing:.06em;margin-bottom:8px}
+  .bp-label-do{color:#1a7f37}
+  .bp-label-dont{color:#cf222e}
+  .bp-card code{font-size:12px;background:rgba(0,0,0,.07);padding:2px 5px;border-radius:4px}
+  .bp-section{margin-top:36px}
+  .bp-section h2{margin-bottom:4px}
+  .bp-section p{margin-top:6px;opacity:.85}
+`}</style>
+
+<div className="tuv-typo tuv-wrap">
+    <div style={{ display: 'flex', gap: 14, flexDirection: 'column', alignItems: 'flex-start' }}>
+        <h1 style={{ margin: 0 }}>Best Practices</h1>
+        <p style={{ margin: 0, opacity: 0.85 }}>
+            Guidelines for using the TUV SUD Design System correctly and efficiently.
+            Following these practices ensures consistent UX, better performance, and easier long-term maintenance.
+        </p>
+    </div>
+
+    ---
+
+    <div className="bp-section">
+        <h2>Don't Override Component Styles</h2>
+        <p>
+            All components come pre-styled and ready to use out of the box — no additional CSS is needed.
+            Overriding their styles with external CSS or <code>!important</code> hacks breaks the design consistency,
+            causes issues with future upgrades, and undermines the design token contract.
+            Trust the pre-built styles; if something needs adjustment, raise it with the design system team.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do</div>
+                <code>{`/* Use the component as-is — it is already styled */`}</code><br/>
+                <code>{`<TsButton variant="primary">Save</TsButton>`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't</div>
+                <code>{`/* Do not force styles into shadow DOM */`}</code><br/>
+                <code>{`ts-button button { background: red !important; }`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Don't Override Component Functionality</h2>
+        <p>
+            Avoid monkey-patching component methods or manipulating internal DOM nodes directly.
+            Use the public API — properties, attributes, and events — to interact with components.
+            Internal implementation details can change between versions.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do — use the public API</div>
+                <code>{`// Listen to the component's own close event`}</code><br/>
+                <code>{`dialog.addEventListener('ts-after-hide', () => onClose());`}</code><br/><br/>
+                <code>{`// Control open state via the attribute`}</code><br/>
+                <code>{`dialog.open = true;`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't — reach into internals</div>
+                <code>{`// Intercepting an internal private method`}</code><br/>
+                <code>{`const orig = dialog._handleClose.bind(dialog);`}</code><br/>
+                <code>{`dialog._handleClose = () => { myLogic(); orig(); };`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Use Lazy Loading — Don't Import the Entire Package</h2>
+        <p>
+            Importing everything from the root entry point loads all components into your bundle at once.
+            Import only the components your page actually needs, or use dynamic imports for heavy-weight components
+            that are not visible on first render.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do — import per component</div>
+                <code>{`import { TsButton } from '@tuvsud/design-system/react/button';`}</code><br/>
+                <code>{`import { TsDatePicker } from '@tuvsud/design-system/react/date-picker';`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't — import everything</div>
+                <code>{`import * as DS from '@tuvsud/design-system/react';`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Use a Single Theme Unless You Need Both Light and Dark</h2>
+        <p>
+            If your application does not support a theme toggle, set one theme class statically on the root element
+            rather than loading theme-switching logic. This avoids unnecessary JavaScript overhead and prevents a
+            flash of unstyled content (FOUC) on page load.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do — static theme</div>
+                <code>{`<html class="ts-theme-light">`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't — switch without need</div>
+                <code>{`// Toggling theme class on every render`}</code><br/>
+                <code>{`html.className = isDark ? 'ts-theme-dark' : 'ts-theme-light';`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Always Pass the Correct Locale</h2>
+        <p>
+            Components like <code>ts-date-picker</code>, <code>ts-date-range</code>, and <code>ts-format-date</code> rely on the
+            <code>locale</code> prop to format dates and labels correctly. Always pass the locale that matches your
+            application's active language — do not rely on the browser default.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do</div>
+                <code>{`<TsDatePicker locale={i18n.language} />`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't</div>
+                <code>{`<TsDatePicker /> {/* locale omitted → browser default */}`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Use Event Types for Type-Safe Handlers</h2>
+        <p>
+            Every component that emits custom events ships with a matching TypeScript event type.
+            Always import and use these types instead of casting to <code>any</code> or <code>Event</code>.
+            This gives you full autocompletion on <code>event.detail</code> and catches breaking changes at compile time.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do</div>
+                <code>{`import { type TsDateSelectEvent } from '@tuvsud/design-system/react';`}</code><br/>
+                <code>{`const handler = (e: TsDateSelectEvent) => e.detail.value;`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't</div>
+                <code>{`const handler = (e: any) => e.detail.value;`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Prefer Attributes Over JavaScript Property Setting on First Render</h2>
+        <p>
+            Set initial values declaratively via props/attributes in your template rather than imperatively in a
+            <code>useEffect</code> or <code>connectedCallback</code>. Imperative post-render property setting can cause
+            a visible flicker on slow devices.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do</div>
+                <code>{`<TsInput value={initialValue} disabled={!isEditable} />`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't</div>
+                <code>{`useEffect(() => { ref.current.value = initialValue; }, []);`}</code>
+            </div>
+        </div>
+    </div>
+
+    <div className="bp-section">
+        <h2>Don't Nest Interactive Components</h2>
+        <p>
+            Avoid rendering interactive components (e.g. <code>ts-button</code>, <code>ts-select</code>) inside other interactive
+            components without a clear purpose. This can create confusing tab order, unexpected event bubbling, and
+            accessibility violations.
+        </p>
+    </div>
+
+    <div className="bp-section">
+        <h2>Register Custom Elements Once</h2>
+        <p>
+            Web components self-register their custom element when you import them. Importing the same component from
+            multiple paths (e.g. once from the root and once from the per-component entry) will throw a
+            <code>NotSupportedError: already defined</code> in the browser. Stick to one import path per component
+            throughout the app.
+        </p>
+    </div>
+
+    <div className="bp-section">
+        <h2>Keep Slots Simple</h2>
+        <p>
+            Slots are designed for content projection (text, icons, simple markup). Avoid slotting in complex stateful
+            components unless documented — internal lifecycle timing between the host and slotted content is not
+            guaranteed across all browsers.
+        </p>
+    </div>
+
+    ---
+
+    <div className="bp-section">
+        <h2>💡 Recommendations</h2>
+
+        <h3>Don't Mix Component or Styling Libraries</h3>
+        <p>
+            Avoid using the TUV SUD Design System alongside other component or styling libraries such as
+            MUI, Radix UI, Ant Design, Chakra UI, or Tailwind CSS components in the same application.
+            Mixing libraries leads to visual inconsistencies, conflicting CSS resets, duplicated design tokens,
+            increased bundle size, and a degraded user experience that no longer aligns with the TUV SUD brand.
+        </p>
+        <p>
+            If a specific pattern is not yet covered by the design system, reach out to the design system team
+            before reaching for a third-party library — a new component or variant may already be planned.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do — stay within the design system</div>
+                <code>{`import { TsButton } from '@tuvsud/design-system/react/button';`}</code><br/>
+                <code>{`import { TsDialog } from '@tuvsud/design-system/react/dialog';`}</code><br/>
+                <code>{`import { TsSelect } from '@tuvsud/design-system/react/select';`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't — mix with other libraries</div>
+                <code>{`import { TsButton } from '@tuvsud/design-system/react/button';`}</code><br/>
+                <code>{`import { Dialog } from '@radix-ui/react-dialog';`}</code><br/>
+                <code>{`import { Select } from '@mui/material';`}</code>
+            </div>
+        </div>
+
+        <h3 style={{ marginTop: 28 }}>Create Local Wrapper Components</h3>
+        <p>
+            We strongly recommend creating your own local shared wrapper components around the design system components
+            in your project. Instead of using <code>TsDatePicker</code>, <code>TsSelect</code>, etc. directly
+            everywhere, wrap them once in your own component and use that throughout your application.
+        </p>
+        <p>
+            This gives you a single place to apply project-wide defaults (locale, error handling, common props),
+            keeps your codebase decoupled from the design system's API surface, and makes future upgrades or
+            replacements trivial — you only change one file.
+        </p>
+        <div className="bp-grid">
+            <div className="bp-card bp-do">
+                <div className="bp-label bp-label-do">✓ Do — create a local wrapper</div>
+                <code>{`// components/AppDatePicker.tsx`}</code><br/>
+                <code>{`import { TsDatePicker, type TsDateSelectEvent }`}</code><br/>
+                <code>{`    from '@tuvsud/design-system/react/date-picker';`}</code><br/>
+                <code>{`import { useTranslation } from 'react-i18next';`}</code><br/><br/>
+                <code>{`export function AppDatePicker(props) {`}</code><br/>
+                <code>{`    const { i18n } = useTranslation();`}</code><br/>
+                <code>{`    return <TsDatePicker locale={i18n.language} {...props} />;`}</code><br/>
+                <code>{`}`}</code>
+            </div>
+            <div className="bp-card bp-dont">
+                <div className="bp-label bp-label-dont">✗ Don't — scatter direct imports everywhere</div>
+                <code>{`// page-a.tsx`}</code><br/>
+                <code>{`import { TsDatePicker } from '@tuvsud/design-system/react/date-picker';`}</code><br/>
+                <code>{`<TsDatePicker locale="en" ... />`}</code><br/><br/>
+                <code>{`// page-b.tsx`}</code><br/>
+                <code>{`import { TsDatePicker } from '@tuvsud/design-system/react/date-picker';`}</code><br/>
+                <code>{`<TsDatePicker locale="en" ... />`}</code>
+            </div>
+        </div>
+    </div>
+
+</div>

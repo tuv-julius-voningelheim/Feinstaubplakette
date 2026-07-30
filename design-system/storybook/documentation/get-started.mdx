@@ -1,0 +1,187 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Get Started" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+`}</style>
+
+<div
+    className="tuv-typo"
+    style={{ display: 'flex', gap: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+>
+    <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+        <img src="/assets/logo.svg" alt="Logo" width="90" height="80" />
+        <img src="/assets/algorithm-logo.svg" alt="Logo" width="70" />
+    </div>
+    <h1>TÜV SÜD Algorithm Design System</h1>
+</div>
+
+<div className="tuv-typo">
+    This design system is a collection of reusable, high-performance web components built on top of [Shoelace](https://shoelace.style) using Lit and Typescript and enhanced with custom styles and features.
+
+    The components are:
+
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: '16px',
+      margin: '24px 0',
+    }}>
+      {[
+        { icon: 'accessibility', title: 'Accessible', desc: 'Built with a11y best practices in mind.' },
+        { icon: '🎨', title: 'Themes', desc: 'Dark and light themes provided, and easy to customize.' },
+        { icon: '🧩', title: 'Framework-Agnostic', desc: 'Usable in any frontend stack (e.g. React, Angular).' },
+        { icon: '📖', title: 'Interactive', desc: 'Fully documented and testable through Storybook.' },
+      ].map(({ icon, title, desc }) => (
+        <div key={title} style={{
+          border: '1px solid #e2e8f0',
+          borderRadius: '12px',
+          padding: '20px',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+        }}>
+          <span style={{ fontSize: '28px' }}>
+            {icon === 'accessibility'
+              ? <img src="/assets/Accessibility.png" alt="Accessible" width="28" height="28" />
+              : icon}
+          </span>
+          <strong style={{ fontSize: '15px', color: '#1e293b' }}>{title}</strong>
+          <span style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>{desc}</span>
+        </div>
+      ))}
+    </div>
+
+    ## Getting Started
+
+    To use this library, you can browse through the components listed in the sidebar.
+    Each component has its own story where you can see usage examples and documentation.
+
+    ## Prerequisites
+
+    - Node.js (>= 18.x recommended)
+    - Personal Access Token (PAT) in Azure DevOps
+
+    ## Configure Azure DevOps Personal Access Token (PAT)
+
+    To install the private `@tuvsud/design-system` package from Azure DevOps, you need to:
+
+    ### 1. Generate PAT
+
+    - Go to [Azure DevOps PAT page](https://dev.azure.com/tuvsud01/_usersSettings/tokens)
+    - Click **New Token**
+    - Add Token Name
+    - Set scopes to include `Packaging (Read)`
+
+    ### 2. Set up `.npmrc`
+
+    Create a .npmrc file in the root of your project and configure it to authenticate with the Azure DevOps npm registry.
+    ```bash
+    registry=https://registry.npmjs.org/
+    always-auth=true
+
+    @tuvsud:registry=https://pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/
+    //pkgs.dev.azure.com/tuvsud01/_packaging/design-system/npm/registry/:_authToken=${YOUR_PAT_TOKEN}
+    ```
+    Replace `YOUR_PAT_TOKEN` with your actual token from Azure DevOps.
+
+    ### 3. Install
+    For now we provide the package via npm, so you can install it using npm.
+
+    ```bash
+    npm install @tuvsud/design-system
+    ```
+
+    ### 4. Install Google Icons
+    To use the google symbols icons, you need to add install the google icons package
+
+    ```bash
+    npm install @material-symbols/svg-400
+    ```
+
+    ## Example Usage React
+
+    The light or dark mode can be imported in React apps at the entry point of the project
+    ```js
+    import '@tuvsud/design-system/tokens/css/light.css';
+    ```
+
+    To use the TÜV SÜD brand font import the fonts at the entry point of the project
+    ```js
+    import '@tuvsud/design-system/theme/fonts.css';
+    ```
+
+    To use the google material icons in React, you need to register the library at the entry point of the project `entry.tsx`
+
+    ```tsx
+    import { registerGoogleMaterial } from '@tuvsud/design-system/react';
+    registerGoogleMaterial();
+    ```
+
+    ```js
+    import { TsButton } from "@tuvsud/design-system/react/button";
+
+    <TsButton onClick={clickHandler} variant="primary">Button</TsButton>
+    ```
+    More About React usage can be found [here](/docs/foundation-react--docs)
+
+    ## Angular Configuration
+
+    Add the package to `main.ts`
+    ```js
+    import "@tuvsud/design-system";
+    ```
+
+    To import one component add just the component to the `main.ts`
+    ```js
+    import "@tuvsud/design-system/button";
+    ```
+
+    add the schema to `app.ts`
+    ```js
+    @Component({
+      ...
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    })
+    ```
+
+    The light or dark mode can be added to `angular.json`
+    ```js
+    "assets": [
+        ...
+        {
+            "glob": "**/*.svg",
+            "input": "node_modules/@material-symbols/svg-400/rounded",      // google icons
+            "output": "assets/material-symbols/rounded"
+        }
+    ],
+    "styles": [
+        "src/styles.css",
+        "node_modules/@tuvsud/design-system/dist/tokens/bundle-light.css",  // light theme
+        "node_modules/@tuvsud/design-system/dist/theme/fonts.css"
+    ]
+    ```
+
+    Example Usage
+    ```js
+    <ts-button variant="primary">Button</ts-button>
+    ```
+    ## Docker
+    Using the package inside a Docker container may cause issues due to the Personal Access Token (PAT) stored in the .npmrc file.
+    Please refer to the [npm documentation](https://docs.npmjs.com/docker-and-private-modules) on how to use private modules securely.
+
+    ## Typography
+    To use the TÜV SÜD brand font across all web components, copy the .woff font files into the `public/fonts` folder.
+
+    Download the [Fonts](https://dev.azure.com/tuvsud01/ALGORITHM%20Design%20System/_git/design-system?path=/public/fonts)
+
+    ## Notes
+    The TÜV web components are built on top of Shoelace and come fully bundled and exposed via the `@tuvsud/design-system` package.
+
+    There's no need to manually install the Shoelace library or apply additional styling — all required styles and component registrations are handled automatically.
+
+</div>

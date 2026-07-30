@@ -1,0 +1,149 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Localization" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+  .tuv-wrap{max-width:980px;width:100%;padding:0 16px}
+  .tuv-note{border:1px solid rgba(0,0,0,.12);border-radius:10px;padding:12px 14px;line-height:1.45}
+  .tuv-kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:12px;padding:2px 6px;border:1px solid rgba(0,0,0,.18);border-radius:6px;background:rgba(0,0,0,.04)}
+  .tuv-grid{display:grid;gap:10px}
+  .tuv-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (max-width:800px){.tuv-grid-2{grid-template-columns:1fr}}
+`}</style>
+
+<div className="tuv-typo tuv-wrap">
+    <div style={{ display: 'flex', gap: 14, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+        <h1 style={{margin:0}}>Localization</h1>
+        <p style={{ margin: 0, opacity: 0.85 }}>
+            TUV SUD UI components support localization through language and locale settings to ensure proper formatting and translations.
+        </p>
+    </div>
+
+    <h3>Date and Range Picker</h3>
+    <p style={{ margin: 0, opacity: 0.85 }}>
+        Our datepicker and date range components support language and locale in a predictable way: language drives texts, and locale refines date formats.
+    </p>
+    <div className="tuv-note" style={{ marginTop: 14 }}>
+        <strong>Model</strong>
+        <div style={{ marginTop: 8 }} className="tuv-grid tuv-grid-2">
+            <div>
+                <div><span className="tuv-kbd">language</span> (e.g. <span className="tuv-kbd">de</span>, <span className="tuv-kbd">en</span>)</div>
+                <div style={{ marginTop: 6, opacity: 0.9 }}>Controls:</div>
+                <ul style={{ margin: '6px 0 0 18px' }}>
+                    <li>Month names, weekday labels</li>
+                    <li>Buttons and dialog labels</li>
+                    <li>Validation error messages</li>
+                    <li>Fallback labels (start/end)</li>
+                </ul>
+            </div>
+            <div>
+                <div><span className="tuv-kbd">locale</span> (e.g. <span className="tuv-kbd">de-CH</span>, <span className="tuv-kbd">en-GB</span>)</div>
+                <div style={{ marginTop: 6, opacity: 0.9 }}>Refines:</div>
+                <ul style={{ margin: '6px 0 0 18px' }}>
+                    <li>Date display format</li>
+                    <li>Input mask / placeholder</li>
+                    <li>Date parsing expectations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h4 style={{ marginTop: 22 }}>Supported languages</h4>
+    <p style={{ marginTop: 6, opacity: 0.9 }}>
+        You can pass a language-only value (for example <span className="tuv-kbd">de</span>). It will be normalized to a default locale for formatting,
+        while keeping i18n in the same language.
+    </p>
+
+    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 10 }}>
+        <thead>
+        <tr>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Language</th>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Examples</th>
+        </tr>
+        </thead>
+        <tbody>
+        {[
+            ['en', 'en, en-US, en-GB, en-CH, en-IN, en-SG'],
+            ['de', 'de, de-DE, de-AT, de-CH'],
+            ['es', 'es, es-ES'],
+            ['fr', 'fr, fr-FR, fr-CH'],
+            ['it', 'it, it-IT, it-CH'],
+            ['zh', 'zh, zh-CN'],
+            ['ru', 'ru, ru-RU'],
+            ['tr', 'tr, tr-TR'],
+            ['da', 'da, da-DK'],
+        ].map(([lang, ex]) => (
+            <tr key={lang}>
+                <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+                    <span className="tuv-kbd">{lang}</span>
+                </td>
+                <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+                    {ex.split(', ').map(v => <span key={v} className="tuv-kbd" style={{ marginRight: 8 }}>{v}</span>)}
+                </td>
+            </tr>
+        ))}
+        </tbody>
+    </table>
+
+    <h4 style={{ marginTop: 22 }}>Supported locales and date formats</h4>
+    <p style={{ marginTop: 6, opacity: 0.9 }}>
+        The locale determines the official date format used by formatting, parsing, placeholders, and masks.
+    </p>
+
+    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 10 }}>
+        <thead>
+        <tr>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Locale</th>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Language</th>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Date format (Placeholder)</th>
+            <th style={{ textAlign: 'left', padding: 10, borderBottom: '1px solid rgba(0,0,0,.15)' }}>Example</th>
+        </tr>
+        </thead>
+        <tbody>
+        {[
+            ['de-DE', 'de', 'TT.MM.JJJJ', '31.12.2025'],
+            ['de-AT', 'de', 'TT.MM.JJJJ', '31.12.2025'],
+            ['de-CH', 'de', 'TT/MM/JJJJ', '31/12/2025'],
+
+            ['en-US', 'en', 'MM/DD/YYYY', '12/31/2025'],
+            ['en-GB', 'en', 'DD/MM/YYYY', '31/12/2025'],
+            ['en-CH', 'en', 'DD/MM/YYYY', '31/12/2025'],
+            ['en-IN', 'en', 'DD/MM/YYYY', '31/12/2025'],
+            ['en-SG', 'en', 'DD/MM/YYYY', '31/12/2025'],
+
+            ['es-ES', 'es', 'DD/MM/YYYY', '31/12/2025'],
+
+            ['fr-FR', 'fr', 'DD/MM/YYYY', '31/12/2025'],
+            ['fr-CH', 'fr', 'DD/MM/YYYY', '31/12/2025'],
+
+            ['it-IT', 'it', 'DD/MM/YYYY', '31/12/2025'],
+            ['it-CH', 'it', 'DD/MM/YYYY', '31/12/2025'],
+
+            ['zh-CN', 'zh', 'YYYY/MM/DD', '2025/12/31'],
+
+            ['ru-RU', 'ru', 'DD.MM.YYYY', '31.12.2025'],
+            ['tr-TR', 'tr', 'DD.MM.YYYY', '31.12.2025'],
+
+            ['da-DK', 'da', 'DD/MM/YYYY', '31/12/2025'],
+            ].map(([loc, lang, fmt, ex]) => (
+            <tr key={loc}>
+        <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+            <span className="tuv-kbd">{loc}</span>
+        </td>
+        <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+            <span className="tuv-kbd">{lang}</span>
+        </td>
+        <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+            <span className="tuv-kbd">{fmt}</span>
+        </td>
+        <td style={{ padding: 10, borderBottom: '1px solid rgba(0,0,0,.08)' }}>
+            <span className="tuv-kbd">{ex}</span>
+        </td>
+        </tr>
+        ))}
+    </tbody>
+
+</table>
+</div>

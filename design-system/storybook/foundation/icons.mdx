@@ -1,0 +1,387 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/Icons" />
+
+<style>{`
+  :root { --ts-semantic-typography-font-family-default: "TUV SUD Pro", system-ui, sans-serif; }
+  .td { padding: 8px 12px; border: 1px solid var(--ts-core-color-neutral-200, #e0e0e0); }
+  .th { padding: 8px 12px; text-align: left; border: 1px solid var(--ts-core-color-neutral-200, #e0e0e0); }
+`}</style>
+
+<div
+    className="tuv-typo"
+    style={{ display: 'flex', gap: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+>
+    <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+        <img src="/assets/algorithm-logo.svg" alt="Logo" width="70" />
+    </div>
+    <h1>Icons</h1>
+</div>
+
+The `<ts-icon>` component supports four ways to render icons:
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+    <thead>
+        <tr style={{ background: 'var(--ts-core-color-neutral-100, #f5f5f5)' }}>
+            <th className="th">Method</th>
+            <th className="th">When to use</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td className="td">
+                <strong>Google Material Symbols</strong>
+            </td>
+            <td className="td">Recommended — 3,000+ icons, works in React, Angular, and native</td>
+        </tr>
+        <tr style={{ background: 'var(--ts-core-color-neutral-50, #fafafa)' }}>
+            <td className="td">
+                <strong>System icons</strong> <code>library="system"</code>
+            </td>
+            <td className="td">Built-in icons — no setup required</td>
+        </tr>
+        <tr>
+            <td className="td">
+                <strong>Inline SVG (slot)</strong>
+            </td>
+            <td className="td">Your own custom SVG, no registration needed</td>
+        </tr>
+        <tr style={{ background: 'var(--ts-core-color-neutral-50, #fafafa)' }}>
+            <td className="td">
+                <strong>
+                    Direct <code>src</code> URL
+                </strong>
+            </td>
+            <td className="td">Point directly at any public SVG file</td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
+## Google Material Symbols
+
+Over 3,000 icons available at [fonts.google.com/icons](https://fonts.google.com/icons).
+SVGs come from the `@material-symbols/svg-400` npm package — no CDN, no internet required at build time.
+
+**Icon styles**
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+    <thead>
+        <tr style={{ background: 'var(--ts-core-color-neutral-100, #f5f5f5)' }}>
+            <th className="th">
+                <code>library</code> attribute
+            </th>
+            <th className="th">Style folder</th>
+            <th className="th">Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td className="td">
+                <code>material</code>
+            </td>
+            <td className="td">rounded</td>
+            <td className="td">Default short alias</td>
+        </tr>
+        <tr style={{ background: 'var(--ts-core-color-neutral-50, #fafafa)' }}>
+            <td className="td">
+                <code>material-rounded</code>
+            </td>
+            <td className="td">rounded</td>
+            <td className="td">Explicit alias</td>
+        </tr>
+        <tr>
+            <td className="td">
+                <code>material-sharp</code>
+            </td>
+            <td className="td">sharp</td>
+            <td className="td"></td>
+        </tr>
+        <tr style={{ background: 'var(--ts-core-color-neutral-50, #fafafa)' }}>
+            <td className="td">
+                <code>material-outlined</code>
+            </td>
+            <td className="td">outlined</td>
+            <td className="td"></td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
+## Setup — React + Vite
+
+### Step 1 — Add the Vite plugin
+
+The plugin automatically serves icons in dev mode and copies only the icons your app uses into `dist/` at build time.
+
+```ts
+// vite.config.ts
+import { designSystemIconsVitePlugin } from '@tuvsud/design-system/vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+    plugins: [react(), ...designSystemIconsVitePlugin()],
+});
+```
+
+### Step 2 — Register the library once
+
+Call this once in your app entry point (`main.tsx`):
+
+```ts
+import { registerGoogleMaterial } from '@tuvsud/design-system/react';
+
+registerGoogleMaterial();
+```
+
+### Step 3 — Use icons
+
+```tsx
+import { TsIcon, TsIconButton } from '@tuvsud/design-system/react';
+
+// Rounded (default)
+<TsIcon name="home" size={24} />
+<TsIcon name="home-fill" size={24} />        // filled variant
+
+// Sharp
+<TsIcon name="home" library="material-sharp" size={24} />
+
+// Icon button
+<TsIconButton name="settings" size={24} />
+```
+
+> **App deployed at a sub-path (e.g. `/myapp/`)?**
+>
+> Set `base` in `vite.config.ts` — the plugin reads it automatically. Then pass a matching `basePath` to `registerGoogleMaterial`:
+>
+> ```ts
+> // vite.config.ts
+> export default defineConfig({
+>     base: '/myapp/',
+>     plugins: [react(), ...designSystemIconsVitePlugin()],
+> });
+>
+> // main.tsx
+> registerGoogleMaterial({ basePath: '/myapp/icons/material-symbols' });
+> ```
+
+---
+
+## Setup — Angular (esbuild, default)
+
+No plugin needed. Angular's asset pipeline copies the SVG files for you.
+
+### Step 1 — Add entries to `angular.json`
+
+Inside your build target's `"assets"` array, add one entry per style you use:
+
+```json
+"assets": [
+  "src/favicon.ico",
+  "src/assets",
+  {
+    "glob": "**/*.svg",
+    "input": "node_modules/@material-symbols/svg-400/rounded",
+    "output": "icons/material-symbols/rounded"
+  },
+  {
+    "glob": "**/*.svg",
+    "input": "node_modules/@material-symbols/svg-400/sharp",
+    "output": "icons/material-symbols/sharp"
+  }
+]
+```
+
+### Step 2 — Register the library once
+
+```ts
+// main.ts
+import { registerGoogleMaterial } from '@tuvsud/design-system';
+
+registerGoogleMaterial();
+```
+
+### Step 3 — Use icons
+
+```html
+<ts-icon name="home" size="24"></ts-icon> <ts-icon name="home-fill" size="24"></ts-icon>
+<!-- filled variant -->
+<ts-icon name="home" library="material-sharp" size="24"></ts-icon>
+
+<ts-icon-button name="settings" size="24"></ts-icon-button>
+```
+
+> **App deployed at a sub-path?** The `output` in `angular.json` is always relative to the app root — no change needed there. Only update `registerGoogleMaterial`:
+>
+> ```ts
+> registerGoogleMaterial({ basePath: '/myapp/icons/material-symbols' });
+> ```
+
+---
+
+## Setup — Angular (webpack-based)
+
+Used when you have `@angular-builders/custom-webpack` configured.
+
+### Step 1 — Install the peer dependency
+
+```bash
+npm install --save-dev copy-webpack-plugin
+```
+
+### Step 2 — Add the plugin to your webpack config
+
+```ts
+// custom-webpack.config.ts
+import { designSystemIconsWebpackPlugin } from '@tuvsud/design-system/webpack';
+
+module.exports = {
+    plugins: [designSystemIconsWebpackPlugin()], // copies rounded + sharp by default
+};
+```
+
+### Step 3 — Register the library once
+
+```ts
+// main.ts
+import { registerGoogleMaterial } from '@tuvsud/design-system';
+
+registerGoogleMaterial();
+```
+
+---
+
+## Using a different icon weight
+
+The default package is `@material-symbols/svg-400`. If you need a different stroke weight, swap the package — the browser-facing path stays the same.
+
+```bash
+npm install @material-symbols/svg-200
+```
+
+**React + Vite** — pass `package` to the plugin:
+
+```ts
+// vite.config.ts
+export default defineConfig({
+    plugins: [react(), ...designSystemIconsVitePlugin({ package: '@material-symbols/svg-200' })],
+});
+
+// main.tsx — no change needed
+registerGoogleMaterial();
+```
+
+**Angular esbuild** — change the `input` path in `angular.json`:
+
+```json
+{
+    "glob": "**/*.svg",
+    "input": "node_modules/@material-symbols/svg-200/rounded",
+    "output": "icons/material-symbols/rounded"
+}
+```
+
+```ts
+// main.ts — no change needed
+registerGoogleMaterial();
+```
+
+---
+
+## Dynamic icon names
+
+The Vite plugin detects icon names by scanning your source files at build time. **Hardcoded string names are detected automatically:**
+
+```tsx
+<TsIcon name="home" />                          // ✅ detected
+<TsIcon name={"home"} />                        // ✅ detected
+<TsIcon name={flag ? 'home' : 'search'} />      // ✅ detected — both values
+```
+
+**Variables, props, and runtime values cannot be detected:**
+
+```tsx
+<TsIcon name={iconName} />                      // ❌ not detected
+<TsIcon name={props.icon} />                    // ❌ not detected
+<TsIcon name={statusMap[status]} />             // ❌ not detected
+```
+
+For these cases, add the possible icon names manually via `additionalIcons`:
+
+```ts
+// vite.config.ts
+export default defineConfig({
+    plugins: [
+        react(),
+        ...designSystemIconsVitePlugin({
+            additionalIcons: [
+                { name: 'check_circle', style: 'rounded' },
+                { name: 'cancel', style: 'rounded' },
+                { name: 'warning', style: 'rounded' },
+                { name: 'info', style: 'rounded' },
+            ],
+        }),
+    ],
+});
+```
+
+Both static detection and `additionalIcons` work together — only add the names that can't be auto-detected.
+
+---
+
+## Custom SVG — Inline (slot)
+
+Pass any SVG directly as a child. Slotted content takes full precedence over `name` and `src`.
+
+**React**
+
+```tsx
+<TsIcon size={32}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 22h20L12 2z" />
+    </svg>
+</TsIcon>
+```
+
+**Angular / Web Components**
+
+```html
+<ts-icon size="32">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 22h20L12 2z" />
+    </svg>
+</ts-icon>
+```
+
+You can also slot an `<img>`. If the `src` ends in `.svg`, the component fetches and inlines it so `currentColor` keeps working:
+
+```html
+<ts-icon size="32">
+    <img src="/assets/icons/my-icon.svg" alt="My icon" />
+</ts-icon>
+```
+
+---
+
+## Custom SVG — Direct URL (`src` prop)
+
+Point the component at any public `.svg` file. No library registration required.
+
+**React**
+
+```tsx
+<TsIcon src="/assets/icons/custom.svg" size={32} />
+```
+
+**Angular / Web Components**
+
+```html
+<ts-icon src="/assets/icons/custom.svg" size="32"></ts-icon>
+```
+
+---
+
+> For all `<ts-icon>` and `<ts-icon-button>` props and live examples, see **Components → Icon** and **Components → Icon Button** in the sidebar.

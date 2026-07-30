@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundation/React" />
+
+<style>{`
+  :root{--ts-semantic-typography-font-family-default:"TUV SUD Pro",system-ui,sans-serif}
+  .tuv-typo,.tuv-typo *{font-family:"TUV SUD Pro",system-ui,sans-serif!important}
+`}</style>
+
+<div
+    className="tuv-typo"
+    style={{ display: 'flex', gap: 20, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+>
+    <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+        <img src="/assets/react.svg" alt="React logo" width="70" />
+        <img src="/assets/algorithm-logo.svg" alt="Logo" width="70" />
+    </div>
+    <h1>React Components</h1>
+</div>
+
+<div className="tuv-typo">
+    <p>
+        The Design System provides React wrappers for all components, giving React developers a natural and idiomatic usage style.
+        The documentation lets you switch effortlessly between HTML and React examples.
+    </p>
+
+    <p>
+        Storybook examples focus on the native web components, e.g. <code>{`<ts-button>`}</code>, <code>{`<ts-select>`}</code>, etc.
+        The React package exposes idiomatic React wrappers using PascalCase names such as <code>{`<TsButton>`}</code>, <code>{`<TsSelect>`}</code>.
+        These wrappers map one-to-one to the underlying web components but follow normal React conventions and typing.
+    </p>
+
+    ---
+    <p>
+        For Installation and usage instructions, please refer to the <a href="/?path=/docs/get-started--docs#3-install">Get Started</a> section.
+    </p>
+
+    <h2>Usage</h2>
+
+    Single import example:
+    ``` jsx
+        import { TsButton } from '@tuvsud/design-system/react/button';
+
+        <TsButton onClick={clickHandler} variant="primary">
+            Button
+        </TsButton>
+    ```
+
+    or import group of components
+
+    ``` jsx
+        import { TsButton, TsSelect } from '@tuvsud/design-system/react';
+
+        <TsButton onClick={clickHandler} variant="primary">
+            Button
+        </TsButton>
+
+        <TsSelect>
+            <ts-option value="1">Option 1</ts-option>
+            <ts-option value="2">Option 2</ts-option>
+        </TsSelect>
+    ```
+
+    <h2>Event Handling</h2>
+    Many components emit custom events. In React, you can handle these events using the standard `onEventName` props.
+    For example, to handle a on input event on a input component:
+    ``` jsx
+        import { TsInput } from '@tuvsud/design-system/react/input';
+
+        <TsInput onTsInput={event => setValue(event.target.value)} />
+    ```
+
+    <h2>TypeScript Support</h2>
+
+    All React wrappers are written in TypeScript and ship with full type definitions.
+    Every component prop, event handler, and event detail object is fully typed — no additional `@types` package is needed.
+
+    Each component that emits custom events provides a matching event-type that you can import for type-safe handlers.
+
+    The example below uses `TsDatePicker`, but the same pattern applies to every component in the design system.
+
+    ```tsx
+    import { useState } from 'react';
+    import { TsDatePicker, type TsDateSelectEvent, type TsDateMeta } from '@tuvsud/design-system/react';
+
+    function MyForm() {
+        const [isoDate, setIsoDate] = useState<string>('');
+        const [meta, setMeta] = useState<TsDateMeta | undefined>(undefined);
+
+        return (
+            <TsDatePicker
+                label="Appointment date"
+                locale="en"
+                required
+                onTsDateSelect={handleSelect}
+            />
+        );
+    }
+    ```
+
+</div>

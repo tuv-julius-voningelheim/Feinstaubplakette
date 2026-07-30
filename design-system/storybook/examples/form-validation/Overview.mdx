@@ -1,0 +1,522 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Examples/Form Validation/Overview" />
+
+# Form Validation
+
+TÜV SÜD Algorithm Design System provides comprehensive form validation support through both native **HTML validation**
+attributes and **custom validation APIs**.
+This guide covers validation patterns for all form components:
+`input`, `textarea`, `select`, `checkbox`, `radio-group`, `range`, `date-picker`, and `date-range`
+
+## Native Validation
+
+Native validation uses built-in HTML5 validation attributes that work automatically with form submission. These validations are handled by the browser and provide consistent behavior across all form components.
+
+### Supported Native Validation Attributes
+
+<table>
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+            <th>Supported Components</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <code>required</code>
+            </td>
+            <td>Field must have a value</td>
+            <td>Input, Textarea, Select, Checkbox, Radio Group, Range, Date Picker, Date Range</td>
+        </tr>
+        <tr>
+            <td>
+                <code>min</code>
+            </td>
+            <td>Minimum numeric value</td>
+            <td>Input (number), Range</td>
+        </tr>
+        <tr>
+            <td>
+                <code>max</code>
+            </td>
+            <td>Maximum numeric value</td>
+            <td>Input (number), Range</td>
+        </tr>
+        <tr>
+            <td>
+                <code>minlength</code>
+            </td>
+            <td>Minimum character length</td>
+            <td>Input, Textarea</td>
+        </tr>
+        <tr>
+            <td>
+                <code>maxlength</code>
+            </td>
+            <td>Maximum character length</td>
+            <td>Input, Textarea</td>
+        </tr>
+        <tr>
+            <td>
+                <code>pattern</code>
+            </td>
+            <td>Regex pattern to match</td>
+            <td>Input</td>
+        </tr>
+        <tr>
+            <td>
+                <code>type="email"</code>
+            </td>
+            <td>Must be valid email format</td>
+            <td>Input</td>
+        </tr>
+        <tr>
+            <td>
+                <code>type="url"</code>
+            </td>
+            <td>Must be valid URL format</td>
+            <td>Input</td>
+        </tr>
+        <tr>
+            <td>
+                <code>type="number"</code>
+            </td>
+            <td>Must be a valid number</td>
+            <td>Input</td>
+        </tr>
+        <tr>
+            <td>
+                <code>type="tel"</code>
+            </td>
+            <td>Telephone input (no validation)</td>
+            <td>Input</td>
+        </tr>
+    </tbody>
+</table>
+
+## Component Validation Reference
+
+### Input (`<ts-input>`)
+
+The input component supports the most validation attributes.
+
+#### Native Validation
+
+```html
+<!-- Required field -->
+<ts-input label="Name" required></ts-input>
+
+<!-- Email validation -->
+<ts-input label="Email" type="email" required></ts-input>
+
+<!-- Number with min/max -->
+<ts-input label="Age" type="number" min="18" max="100"></ts-input>
+
+<!-- Text length constraints -->
+<ts-input label="Username" minlength="3" maxlength="20" required></ts-input>
+
+<!-- Pattern matching (e.g., postal code) -->
+<ts-input label="Postal Code" pattern="[0-9]{5}" required></ts-input>
+
+<!-- URL validation -->
+<ts-input label="Website" type="url"></ts-input>
+```
+
+#### Custom Validation
+
+```js
+const input = document.querySelector('ts-input');
+
+// Set custom validation on input event
+input.addEventListener('ts-input', () => {
+    if (input.value.includes('admin')) {
+        input.error = true;
+        input.errorMessage = 'Username cannot contain "admin"';
+    } else {
+        input.error = false;
+        input.errorMessage = '';
+    }
+});
+```
+
+> **Note:** When you set `error = true` and provide an `errorMessage`, the component automatically calls
+> `setCustomValidity()` internally. You only need to call `setCustomValidity()` directly if you want to
+> integrate with the native form validation API without showing the visual error state.
+
+### Textarea (`<ts-textarea>`)
+
+Textarea supports text-based validation attributes.
+
+#### Native Validation
+
+```html
+<!-- Required textarea -->
+<ts-textarea label="Description" required></ts-textarea>
+
+<!-- Length constraints -->
+<ts-textarea label="Bio" minlength="50" maxlength="500" required></ts-textarea>
+```
+
+#### Custom Validation
+
+```js
+const textarea = document.querySelector('ts-textarea');
+
+textarea.addEventListener('ts-input', () => {
+    const wordCount = textarea.value.trim().split(/\s+/).length;
+    if (wordCount < 10) {
+        textarea.error = true;
+        textarea.errorMessage = `Please enter at least 10 words (current: ${wordCount})`;
+    } else {
+        textarea.error = false;
+        textarea.errorMessage = '';
+    }
+});
+```
+
+### Select (`<ts-select>`)
+
+Select component validates that a selection has been made.
+
+#### Native Validation
+
+```html
+<!-- Required select -->
+<ts-select label="Country" required>
+    <ts-option value="">Select a country</ts-option>
+    <ts-option value="de">Germany</ts-option>
+    <ts-option value="us">United States</ts-option>
+</ts-select>
+```
+
+#### Custom Validation
+
+```js
+const select = document.querySelector('ts-select');
+
+select.addEventListener('ts-change', () => {
+    if (select.value === 'other') {
+        // Show additional field or validate
+        select.error = true;
+        select.errorMessage = 'Please specify your country in the field below';
+    } else {
+        select.error = false;
+        select.errorMessage = '';
+    }
+});
+```
+
+### Checkbox (`<ts-checkbox>`)
+
+Checkbox validates whether it is checked or unchecked.
+
+#### Native Validation
+
+```html
+<!-- Required checkbox (must be checked) -->
+<ts-checkbox required>I accept the terms and conditions</ts-checkbox>
+```
+
+#### Custom Validation
+
+```js
+const checkbox = document.querySelector('ts-checkbox');
+
+// Validate on form submit
+form.addEventListener('submit', e => {
+    if (!checkbox.checked) {
+        e.preventDefault();
+        checkbox.error = true;
+        checkbox.errorMessage = 'You must accept the terms to continue';
+    }
+});
+```
+
+### Switch (`<ts-switch>`)
+
+Switch component works similarly to checkbox for validation.
+
+#### Native Validation
+
+```html
+<!-- Required switch -->
+<ts-switch required>Enable notifications</ts-switch>
+```
+
+#### Custom Validation
+
+```js
+const switchEl = document.querySelector('ts-switch');
+
+switchEl.addEventListener('ts-change', () => {
+    if (switchEl.checked) {
+        // Validate related fields
+        const emailInput = document.querySelector('ts-input[name="email"]');
+        if (!emailInput.value) {
+            emailInput.error = true;
+            emailInput.errorMessage = 'Email is required when notifications are enabled';
+        }
+    }
+});
+```
+
+### Radio Group (`<ts-radio-group>`)
+
+Radio group validates that one option is selected.
+
+#### Native Validation
+
+```html
+<!-- Required radio group -->
+<ts-radio-group label="Payment Method" required>
+    <ts-radio value="credit">Credit Card</ts-radio>
+    <ts-radio value="debit">Debit Card</ts-radio>
+    <ts-radio value="paypal">PayPal</ts-radio>
+</ts-radio-group>
+```
+
+#### Custom Validation
+
+```js
+const radioGroup = document.querySelector('ts-radio-group');
+
+radioGroup.addEventListener('ts-change', () => {
+    if (radioGroup.value === 'credit') {
+        // Show credit card fields
+        showCreditCardFields();
+    }
+
+    // Clear error when selection is made
+    radioGroup.error = false;
+    radioGroup.errorMessage = '';
+});
+
+// On form submit
+form.addEventListener('submit', e => {
+    if (!radioGroup.value) {
+        e.preventDefault();
+        radioGroup.error = true;
+        radioGroup.errorMessage = 'Please select a payment method';
+    }
+});
+```
+
+### Range (`<ts-range>`)
+
+Range component validates numeric values within bounds.
+
+#### Native Validation
+
+```html
+<!-- Range with min/max -->
+<ts-range label="Volume" min="0" max="100" value="50"></ts-range>
+
+<!-- Range with step -->
+<ts-range label="Rating" min="1" max="5" step="0.5"></ts-range>
+```
+
+#### Custom Validation
+
+```js
+const range = document.querySelector('ts-range');
+
+// Validate minimum value requirement
+form.addEventListener('submit', e => {
+    if (range.value < 25) {
+        e.preventDefault();
+        range.error = true;
+        range.errorMessage = 'Please select a value of at least 25';
+    } else {
+        range.error = false;
+        range.errorMessage = '';
+    }
+});
+
+// Real-time validation
+range.addEventListener('ts-input', () => {
+    if (range.value < 25) {
+        range.error = true;
+        range.errorMessage = 'Minimum value is 25';
+    } else {
+        range.error = false;
+        range.errorMessage = '';
+    }
+});
+```
+
+### Date Picker (`<ts-date-picker>`)
+
+Date picker validates date input with built-in and custom validation.
+
+#### Native Validation
+
+```html
+<!-- Required date -->
+<ts-date-picker label="Birth Date" required></ts-date-picker>
+
+<!-- Date with locale -->
+<ts-date-picker label="Appointment Date" locale="de" required></ts-date-picker>
+```
+
+#### Custom Validation
+
+```js
+const datePicker = document.querySelector('ts-date-picker');
+
+// Validate on date change
+datePicker.addEventListener('ts-date-change', () => {
+    const selectedDate = new Date(datePicker.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Example: Date cannot be in the past
+    if (selectedDate < today) {
+        datePicker.dateError = true;
+        datePicker.dateErrorMessage = 'Please select a future date';
+    }
+    // Example: Date must be within next 30 days
+    else {
+        const thirtyDaysFromNow = new Date();
+        thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+        if (selectedDate > thirtyDaysFromNow) {
+            datePicker.dateError = true;
+            datePicker.dateErrorMessage = 'Date must be within the next 30 days';
+        } else {
+            datePicker.dateError = false;
+            datePicker.dateErrorMessage = '';
+        }
+    }
+});
+```
+
+> **Note:** Date picker has internal validation for required fields and invalid date formats.
+> When you set custom validation with `dateError = true` and `dateErrorMessage`, it takes priority over internal validation.
+
+### Date Range (`<ts-date-range>`)
+
+Date range validates start and end dates with both internal and custom validation.
+
+#### Native Validation
+
+```html
+<!-- Required date range -->
+<ts-date-range label-start="Start Date" label-end="End Date" required></ts-date-range>
+
+<!-- Date range with locale -->
+<ts-date-range label-start="Von" label-end="Bis" locale="de" required></ts-date-range>
+```
+
+#### Custom Validation
+
+```js
+const dateRange = document.querySelector('ts-date-range');
+
+// Validate on date change
+dateRange.addEventListener('ts-date-change', e => {
+    const { start, end } = e.detail;
+
+    // Reset errors
+    dateRange.errorStart = false;
+    dateRange.errorMessageStart = '';
+    dateRange.errorEnd = false;
+    dateRange.errorMessageEnd = '';
+
+    if (start && end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        // Example: Maximum range of 30 days
+        const daysDiff = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+        if (daysDiff > 30) {
+            dateRange.errorEnd = true;
+            dateRange.errorMessageEnd = 'Date range cannot exceed 30 days';
+        }
+        // Example: Minimum range of 7 days
+        else if (daysDiff < 7) {
+            dateRange.errorEnd = true;
+            dateRange.errorMessageEnd = 'Date range must be at least 7 days';
+        }
+    }
+});
+```
+
+> **Note:** Date range has internal validation for:
+>
+> - Required fields (when `required` is set)
+> - Invalid date formats
+> - Start date must be before or equal to end date
+>
+> When you set custom validation with `errorStart/errorEnd = true` and `errorMessageStart/errorMessageEnd`,
+> it takes priority over internal validation. The component will not run internal validation when external errors are set.
+
+## Form Validation API
+
+All form components implement the standard form validation API:
+
+<table>
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <code>checkValidity()</code>
+            </td>
+            <td>
+                Returns <code>true</code> if the element's value has no validity problems; <code>false</code> otherwise
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <code>reportValidity()</code>
+            </td>
+            <td>
+                Returns <code>true</code> if the element's value has no validity problems and shows validation message
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <code>setCustomValidity(message)</code>
+            </td>
+            <td>Sets a custom validation message. Pass empty string to clear</td>
+        </tr>
+    </tbody>
+</table>
+
+## Error State Properties
+
+All form components support these error-related properties:
+
+```js
+// Show error state
+element.error = true;
+element.errorMessage = 'This field has an error';
+
+// Clear error state
+element.error = false;
+element.errorMessage = '';
+```
+
+## Accessibility Considerations
+
+- Error messages are automatically associated with form controls using `aria-describedby`
+- Invalid fields are marked with `aria-invalid="true"`
+- Error messages use `role="alert"` for screen reader announcements
+- Focus is managed appropriately when validation errors occur
+
+## See Also
+
+Explore the interactive examples in this section:
+
+- **Basic Validation** - Simple required field validation
+- **Complete Form Validation** - Comprehensive form with all field types
+- **Real-time Validation** - Validation as user types
+- **Password Confirmation** - Matching field validation

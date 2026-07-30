@@ -1,0 +1,13 @@
+dist
+coverage
+node_modules
+storybook-static
+studio-export/
+
+package.json
+package-lock.json
+**/*.yml
+**/*.yaml
+tsconfig.json
+tsconfig.*.json
+README.md
